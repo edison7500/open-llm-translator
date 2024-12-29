@@ -1,0 +1,24 @@
+[tool.black]
+line-length = 79
+include = '\.pyi?$'
+exclude = '''
+/(
+		\.eggs
+  | \.git
+  | \.hg
+  | \.mypy_cache
+  | \.tox
+  | \.venv
+  | _build
+  | migrations
+  | frontend
+  | requirements
+  | static
+  | staticsource
+  | templates
+  | build
+  | dist
+  | upload
+)/
+'''
+
