@@ -3,7 +3,7 @@ ENV PYTHONUNBUFFERED 1
 
 COPY ./requirements /tmp/requirements
 RUN pip install -U pip
-RUN pip install -r /tmp/requirements/base.tx
+RUN pip install -r /tmp/requirements/base.txt
 
 COPY . /opt/open-llm-transaltor
 WORKDIR /opt/open-llm-transaltor
