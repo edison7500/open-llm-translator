@@ -30,12 +30,19 @@ def get_enginee(engine) -> Any:
     return klass
 
 
-class TranslateText(BaseModel):
-    sl: Literal["en"] = Field(default="en")
-    tl: Literal["es", "zh-hans", "zh-hant", "jp", "ko"] = Field(default="es")
+class TranslateParams(BaseModel):
+    sl: Literal[
+        "en",
+    ] = Field(default="en")
+    tl: Literal["es", "zh-hans", "zh-hant", "jp", "ko"] = Field(
+        default="es", description="target language"
+    )
     engine: Literal["google", "deepl", "ollama"] = Field(
         default="google", description="choose a engine for translate"
     )
+
+
+class TranslateText(BaseModel):
     text: str = Field(max_length=5000)
 
 
@@ -46,17 +53,17 @@ class TranslatedResult(BaseModel):
 
 @router.post("/translate/", tags=["translate"])
 async def translate(
-    # query: Annotated[TranslateParams, Query()] = None
-    translate: Annotated[TranslateText, Body()] = None
+    query: Annotated[TranslateParams, Query()] = None,
+    translate: Annotated[TranslateText, Body()] = None,
 ) -> TranslatedResult:
 
     try:
-        engine = get_enginee(translate.engine)
+        engine = get_enginee(query.engine)
     except Exception as err:
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=err
         )
-    agent = engine(target=translate.tl)
+    agent = engine(target=query.tl)
     _target_text = await agent.translate(text=translate.text)
 
-    return TranslatedResult(target_lang=translate.tl, text=_target_text)
+    return TranslatedResult(target_lang=query.tl, text=_target_text)
