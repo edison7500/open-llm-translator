@@ -1,13 +1,13 @@
 from typing import Annotated, Literal, Any
 
 from fastapi import APIRouter
-from fastapi import Query
+from fastapi import Query, Body
 from fastapi import HTTPException, status
 from pydantic import BaseModel, Field
 
 from app.utils.module_loading import import_string
 
-from app.routers.translate.translators import GoogleTranslator
+# from app.routers.translate.translators import GoogleTranslator
 
 Translate_Engine_Map = {
     "ollama": "app.routers.translate.translators.OllamaTranslator",
@@ -30,10 +30,10 @@ def get_enginee(engine) -> Any:
     return klass
 
 
-class TranslateParams(BaseModel):
+class TranslateText(BaseModel):
     sl: Literal["en"] = Field(default="en")
     tl: Literal["es", "zh-hans", "zh-hant", "jp", "ko"] = Field(default="es")
-    a: Literal["google", "deepl", "ollama"] = Field(
+    engine: Literal["google", "deepl", "ollama"] = Field(
         default="google", description="choose a engine for translate"
     )
     text: str = Field(max_length=5000)
@@ -46,16 +46,17 @@ class TranslatedResult(BaseModel):
 
 @router.post("/translate/", tags=["translate"])
 async def translate(
-    query: Annotated[TranslateParams, Query()] = None
+    # query: Annotated[TranslateParams, Query()] = None
+    translate: Annotated[TranslateText, Body()] = None
 ) -> TranslatedResult:
 
     try:
-        engine = get_enginee(query.a)
+        engine = get_enginee(translate.engine)
     except Exception as err:
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=err
         )
-    agent = engine(target=query.tl)
-    _target_text = await agent.translate(text=query.text)
+    agent = engine(target=translate.tl)
+    _target_text = await agent.translate(text=translate.text)
 
-    return TranslatedResult(target_lang=query.tl, text=_target_text)
+    return TranslatedResult(target_lang=translate.tl, text=_target_text)
