@@ -10,9 +10,10 @@ from app.utils.module_loading import import_string
 # from app.routers.translate.translators import GoogleTranslator
 
 Translate_Engine_Map = {
-    "ollama": "app.routers.translate.translators.OllamaTranslator",
     "google": "app.routers.translate.translators.GoogleTranslator",
     "deepl": "app.routers.translate.translators.DeeplTranslator",
+    "ollama": "app.routers.translate.translators.OllamaTranslator",
+    "cloudflare": "app.routers.translate.translators.CloudfalreLLMTranslator",
 }
 
 
@@ -37,7 +38,7 @@ class TranslateParams(BaseModel):
     tl: Literal["es", "zh-hans", "zh-hant", "jp", "ko"] = Field(
         default="es", description="target language"
     )
-    engine: Literal["google", "deepl", "ollama"] = Field(
+    engine: Literal["google", "deepl", "ollama", "cloudflare"] = Field(
         default="google", description="choose a engine for translate"
     )
 
