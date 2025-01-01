@@ -46,7 +46,6 @@ class GoogleTranslator(Translator):
             _target = self.lang_map[target]
         except KeyError:
             _target = target
-        # self.session = requests.Session()
         self.client = httpx.AsyncClient()
         self.endpoint = "https://translate.google.com/m"
         self.headers = {
@@ -124,3 +123,24 @@ class OllamaTranslator(Translator):
             messages=self.prompt(text),
         )
         return response.message.content
+
+
+class CloudfalreLLMTranslator(Translator):
+    name = "cloudflare"
+    account_id = settings.cloudflare_account_id
+    api_token = settings.cloudflare_api_key
+    model = settings.cloudflare_model
+
+    def __init__(self, target: str, source: str = "en"):
+        self.client = httpx.AsyncClient()
+        self.endpoint = f"https://api.cloudflare.com/client/v4/accounts/{self.account_id}/ai/run"
+        self.headers = {"Authorization": f"Bearer {self.api_token}"}
+        super().__init__(target, source)
+
+    async def translate(self, text) -> str:
+        _url = f"{self.endpoint}/{self.model}"
+        r = await self.client.post(
+            _url, headers=self.headers, json={"messages": self.prompt(text)}
+        )
+        _ret = r.json()
+        return _ret["result"]["response"]
