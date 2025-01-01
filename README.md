@@ -3,7 +3,7 @@
 - [x] support Google translate
 - [x] support Ollama
 - [x] support Deepl (need api key)
-- [ ] support Cloudflare (need account id & api key)
+- [x] support Cloudflare (need account id & api key)
 - [ ] support OpenAI
 
 
@@ -14,11 +14,11 @@
 - 🦙 Ollama
 
 
-## Build
+## Install 
 
 ```.shell
 
-git clone 
+git clone https://github.com/edison7500/open-llm-tranlator.git
 cd 
 
 pip install -r requirements/base.txt
