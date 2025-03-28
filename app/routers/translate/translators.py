@@ -49,7 +49,7 @@ class GoogleTranslator(Translator):
         self.client = httpx.AsyncClient()
         self.endpoint = "https://translate.google.com/m"
         self.headers = {
-            "User-Agent": "Mozilla/4.0 (compatible;MSIE 6.0;Windows NT 5.1;SV1;.NET CLR 1.1.4322;.NET CLR 2.0.50727;.NET CLR 3.0.04506.30)"  # noqa: E501
+            "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36",  # noqa: E501
         }
         self.pattern = re.compile(
             r'(?s)class="(?:t0|result-container)">(.*?)<'
@@ -57,7 +57,6 @@ class GoogleTranslator(Translator):
         super().__init__(_target, source)
 
     async def translate(self, text) -> str:
-        text = text[:5000]  # google translate max length
         r = await self.client.get(
             self.endpoint,
             params={"tl": self.target_lang, "sl": self.source_lang, "q": text},

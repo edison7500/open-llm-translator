@@ -35,7 +35,7 @@ class TranslateParams(BaseModel):
     sl: Literal[
         "en",
     ] = Field(default="en")
-    tl: Literal["es", "zh-hans", "zh-hant", "jp", "ko"] = Field(
+    tl: Literal["es", "zh-hans", "zh-hant", "jp", "ko", "vi", "th"] = Field(
         default="es", description="target language"
     )
     engine: Literal["google", "deepl", "ollama", "cloudflare"] = Field(
