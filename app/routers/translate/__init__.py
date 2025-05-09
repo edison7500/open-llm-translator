@@ -1,9 +1,12 @@
-from typing import Annotated, Literal, Any
+from decimal import Decimal
+from typing import Annotated, List, Literal, Any
 
 from fastapi import APIRouter
 from fastapi import Query, Body
 from fastapi import HTTPException, status
 from pydantic import BaseModel, Field
+
+from langdetect import detect_langs
 
 from app.utils.module_loading import import_string
 
@@ -52,6 +55,11 @@ class TranslatedResult(BaseModel):
     text: str = Field()
 
 
+class DetectLangResult(BaseModel):
+    lang: str = Field()
+    prob: Decimal = Field()
+
+
 @router.post("/translate/", tags=["translate"])
 async def translate(
     query: Annotated[TranslateParams, Query()] = None,
@@ -68,3 +76,11 @@ async def translate(
     _target_text = await agent.translate(text=translate.text)
 
     return TranslatedResult(target_lang=query.tl, text=_target_text)
+
+
+@router.post("/langdetect/", tags=["langdetect"])
+async def detect(
+    translate: Annotated[TranslateText, Body()] = None,
+) -> List[DetectLangResult]:
+    langs = detect_langs(translate.text)
+    return [DetectLangResult(lang=lang.lang, prob=lang.prob ) for lang in langs]
