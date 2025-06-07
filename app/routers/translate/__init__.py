@@ -5,10 +5,12 @@ from fastapi import APIRouter
 from fastapi import Query, Body
 from fastapi import HTTPException, status
 from pydantic import BaseModel, Field
-
 from langdetect import detect_langs
 
 from app.utils.module_loading import import_string
+from .models import TranslateText
+from .models import TranslatedResult
+from .models import DetectLangResult
 
 # from app.routers.translate.translators import GoogleTranslator
 
@@ -37,27 +39,16 @@ def get_enginee(engine) -> Any:
 class TranslateParams(BaseModel):
     sl: Literal[
         "en",
+        "es",
+        "zh-hans",
+        "zh-hant",
     ] = Field(default="en")
-    tl: Literal["es", "zh-hans", "zh-hant", "jp", "ko", "vi", "th"] = Field(
-        default="es", description="target language"
-    )
+    tl: Literal[
+        "en", "es", "zh-hans", "zh-hant", "jp", "ko", "vi", "th"
+    ] = Field(default="es", description="target language")
     engine: Literal["google", "deepl", "ollama", "cloudflare"] = Field(
         default="google", description="choose a engine for translate"
     )
-
-
-class TranslateText(BaseModel):
-    text: str = Field(max_length=5000)
-
-
-class TranslatedResult(BaseModel):
-    target_lang: str = Field()
-    text: str = Field()
-
-
-class DetectLangResult(BaseModel):
-    lang: str = Field()
-    prob: Decimal = Field()
 
 
 @router.post("/translate/", tags=["translate"])
@@ -83,4 +74,4 @@ async def detect(
     translate: Annotated[TranslateText, Body()] = None,
 ) -> List[DetectLangResult]:
     langs = detect_langs(translate.text)
-    return [DetectLangResult(lang=lang.lang, prob=lang.prob ) for lang in langs]
+    return [DetectLangResult(lang=lang.lang, prob=lang.prob) for lang in langs]
