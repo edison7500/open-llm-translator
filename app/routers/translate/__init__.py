@@ -63,7 +63,7 @@ async def translate(
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=err
         )
-    agent = engine(target=query.tl)
+    agent = engine(target=query.tl, source=query.sl)
     _target_text = await agent.translate(text=translate.text)
 
     return TranslatedResult(target_lang=query.tl, text=_target_text)

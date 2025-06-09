@@ -12,12 +12,21 @@ def remove_control_characters(s) -> str:
 
 
 class Translator(object):
+    lang_map = dict
+
     def __init__(self, target: str, source: str = "en"):
-        self.source_lang = source
-        self.target_lang = target
+        self.source_lang = self.get_lang4map(source)
+        self.target_lang = self.get_lang4map(target)
 
     def translate(self, text):
         raise NotImplementedError
+
+    def get_lang4map(self, lang) -> str:
+        try:
+            _lang = self.lang_map[lang]
+        except KeyError:
+            _lang = lang
+        return _lang
 
     def prompt(self, text) -> List:
         message = [
@@ -42,17 +51,6 @@ class GoogleTranslator(Translator):
     }
 
     def __init__(self, target, source="en"):
-        try:
-            _target = self.lang_map[target]
-        except KeyError:
-            _target = target
-
-        try:
-            _source = self.lang_map[source]
-        except KeyError:
-            _source = source
-
-
         self.client = httpx.AsyncClient()
         self.endpoint = "https://translate.google.com/m"
         self.headers = {
@@ -61,7 +59,7 @@ class GoogleTranslator(Translator):
         self.pattern = re.compile(
             r'(?s)class="(?:t0|result-container)">(.*?)<'
         )
-        super().__init__(_target, _source)
+        super().__init__(target, source)
 
     async def translate(self, text) -> str:
         r = await self.client.get(
@@ -91,15 +89,8 @@ class DeeplTranslator(Translator):
             import deepl
         except ImportError as err:
             raise ImportError("Please install deepl") from err
-
-        try:
-            _target = self.lang_map[target]
-        except KeyError:
-            _target = target
-
         self.translator = deepl.Translator(self.auth_key)
-
-        super().__init__(_target, source)
+        super().__init__(target, source)
 
     async def translate(self, text) -> str:
         result = self.translator.translate_text(
