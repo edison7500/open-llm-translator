@@ -46,6 +46,13 @@ class GoogleTranslator(Translator):
             _target = self.lang_map[target]
         except KeyError:
             _target = target
+
+        try:
+            _source = self.lang_map[source]
+        except KeyError:
+            _source = source
+
+
         self.client = httpx.AsyncClient()
         self.endpoint = "https://translate.google.com/m"
         self.headers = {
@@ -54,7 +61,7 @@ class GoogleTranslator(Translator):
         self.pattern = re.compile(
             r'(?s)class="(?:t0|result-container)">(.*?)<'
         )
-        super().__init__(_target, source)
+        super().__init__(_target, _source)
 
     async def translate(self, text) -> str:
         r = await self.client.get(
