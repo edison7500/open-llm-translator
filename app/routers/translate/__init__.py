@@ -44,7 +44,7 @@ class TranslateParams(BaseModel):
         "zh-hant",
     ] = Field(default="en")
     tl: Literal[
-        "en", "es", "zh-hans", "zh-hant", "jp", "ko", "vi", "th"
+        "en", "es", "fr", "ru", "zh-hans", "zh-hant", "jp", "ko", "vi", "th"
     ] = Field(default="es", description="target language")
     engine: Literal["google", "deepl", "ollama", "cloudflare"] = Field(
         default="google", description="choose a engine for translate"
