@@ -9,17 +9,17 @@
 
 ## Technologies
 
-- 🐍 Python 
+- 🐍 Python
 - ⚡️ Fastapi
 - 🦙 Ollama
 
 
-## Install 
+## Install
 
 ```.shell
 
 git clone https://github.com/edison7500/open-llm-tranlator.git
-cd 
+cd
 
 pip install -r requirements/base.txt
 

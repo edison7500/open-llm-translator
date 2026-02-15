@@ -1,6 +1,6 @@
 from functools import lru_cache
 
-from typing import Optional, Any
+from typing import Optional
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -15,9 +15,9 @@ class Settings(BaseSettings):
 
     cloudflare_account_id: Optional[str] = None
     cloudflare_api_key: Optional[str] = None
-    cloudflare_model: Optional[
-        str
-    ] = "@cf/meta/llama-3.3-70b-instruct-fp8-fast"
+    cloudflare_model: Optional[str] = (
+        "@cf/meta/llama-3.3-70b-instruct-fp8-fast"
+    )
 
     model_config = SettingsConfigDict(env_file=".env")
 

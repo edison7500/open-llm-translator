@@ -1,0 +1,10 @@
+services:
+  translator-api:
+    build: .
+    ports:
+      - "8000:8000"
+    restart: always
+    logging:
+      options:
+        max-size: 10m
+    command: /usr/local/bin/uvicorn app.main:app  --limit-max-requests 4096 --host 0.0.0.0

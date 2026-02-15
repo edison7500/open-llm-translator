@@ -43,9 +43,15 @@ class TranslateParams(BaseModel):
         "zh-hans",
         "zh-hant",
     ] = Field(default="en")
+<<<<<<< HEAD
     tl: Literal[
         "en", "es", "fr", "ru", "zh-hans", "zh-hant", "jp", "ko", "vi", "th"
     ] = Field(default="es", description="target language")
+=======
+    tl: Literal["en", "es", "zh-hans", "zh-hant", "jp", "ko", "vi", "th"] = (
+        Field(default="es", description="target language")
+    )
+>>>>>>> e732cde (change to uv from pip)
     engine: Literal["google", "deepl", "ollama", "cloudflare"] = Field(
         default="google", description="choose a engine for translate"
     )
