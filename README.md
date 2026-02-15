@@ -19,12 +19,12 @@
 ```.shell
 
 git clone https://github.com/edison7500/open-llm-tranlator.git
-cd
-
-pip install -r requirements/base.txt
+cd open-llm-tranlator
 
 cp env.example .env
 
-fastapi run app/main.py
+uv sync --lock
+
+uv run fastapi dev
 
 ```
